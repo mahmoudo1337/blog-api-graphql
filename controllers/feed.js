@@ -78,8 +78,8 @@ exports.createPost = async (req, res, next) => {
 
 exports.getPost = async (req, res, next) => {
   const postId = req.params.postId;
+  const post = await Post.findById(postId).populate("creator");
   try {
-    const post = await Post.findById(postId).populate("creator");
     if (!post) {
       const error = new Error("Coud not find post");
       error.statusCode = 404;
@@ -102,11 +102,7 @@ exports.updatePost = async (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  if (!req.file) {
-    const error = new Error("No image provided.");
-    error.statusCode = 422;
-    throw error;
-  }
+
   const title = req.body.title;
   const content = req.body.content;
   let imageUrl = req.body.image;
